@@ -26,59 +26,81 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="page" style={{ maxWidth: 360 }}>
-      <h2>{mode === "signin" ? "Log in" : "Create an account"}</h2>
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          minLength={6}
-        />
-        {error && <div style={{ color: "#b91c1c", fontSize: 13 }}>{error}</div>}
-        <button type="submit" disabled={busy}>
-          {busy ? <Spinner label="Please wait…" /> : mode === "signin" ? "Log in" : "Sign up"}
+    <div className="page page-narrow">
+      <div className="auth-card">
+        <span className="eyebrow">PantherPark</span>
+        <h2>{mode === "signin" ? "Log in" : "Create an account"}</h2>
+        <p className="muted" style={{ marginTop: 8 }}>
+          An account keeps your schedule between visits. You don't need one to use PantherPark.
+        </p>
+
+        <form onSubmit={handleSubmit} className="auth-form">
+          <label className="visually-hidden" htmlFor="email">
+            Email
+          </label>
+          <input
+            id="email"
+            type="email"
+            placeholder="Email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <label className="visually-hidden" htmlFor="password">
+            Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            placeholder="Password"
+            autoComplete={mode === "signin" ? "current-password" : "new-password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength={6}
+          />
+          {error && (
+            <div className="alert alert-error" style={{ margin: 0 }} role="alert">
+              {error}
+            </div>
+          )}
+          <button type="submit" className="btn btn-secondary" disabled={busy}>
+            {busy ? <Spinner label="Please wait…" /> : mode === "signin" ? "Log in" : "Sign up"}
+          </button>
+        </form>
+
+        <p className="muted" style={{ marginTop: 14 }}>
+          {mode === "signin" ? (
+            <>
+              No account?{" "}
+              <button onClick={() => setMode("signup")} className="btn-link">
+                Sign up
+              </button>
+            </>
+          ) : (
+            <>
+              Have an account?{" "}
+              <button onClick={() => setMode("signin")} className="btn-link">
+                Log in
+              </button>
+            </>
+          )}
+        </p>
+
+        <div className="auth-divider">or</div>
+
+        <button
+          onClick={() => navigate("/map")}
+          className="btn btn-ghost"
+          style={{ width: "100%" }}
+        >
+          Continue as guest
         </button>
-      </form>
-
-      <p style={{ fontSize: 13, marginTop: 8 }}>
-        {mode === "signin" ? (
-          <>
-            No account?{" "}
-            <button onClick={() => setMode("signup")} style={{ fontSize: 13 }}>
-              Sign up
-            </button>
-          </>
-        ) : (
-          <>
-            Have an account?{" "}
-            <button onClick={() => setMode("signin")} style={{ fontSize: 13 }}>
-              Log in
-            </button>
-          </>
-        )}
-      </p>
-
-      <hr style={{ margin: "20px 0" }} />
-
-      <button
-        onClick={() => navigate("/map")}
-        style={{ width: "100%", padding: 10, fontWeight: 600 }}
-      >
-        Continue as Guest
-      </button>
-      <p style={{ fontSize: 12, color: "#6b7280", marginTop: 6 }}>
-        Guest mode: full access, nothing is saved between visits.
-      </p>
+        <p className="muted" style={{ marginTop: 8 }}>
+          Full access, nothing saved between visits.
+        </p>
+      </div>
     </div>
   );
 }

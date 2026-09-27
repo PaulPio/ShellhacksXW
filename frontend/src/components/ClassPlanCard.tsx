@@ -1,23 +1,22 @@
 import type { ClassPlan, RecommendedLot } from "../lib/api";
 
-const PROVENANCE_COLOR: Record<string, string> = {
-  live: "#16a34a",
-  modelled: "#2563eb",
-  simulated: "#9ca3af",
+const PROVENANCE_CLASS: Record<string, string> = {
+  live: "badge-live",
+  modelled: "badge-modelled",
+  simulated: "badge-simulated",
 };
+
+/** Fullness is the one number students scan for, so it gets its own colour. */
+function fullnessClass(pct: number | null): string {
+  if (pct === null) return "";
+  if (pct < 60) return "lot-fill-ok";
+  if (pct < 85) return "lot-fill-warn";
+  return "lot-fill-busy";
+}
 
 function ProvenanceBadge({ provenance, confidence }: { provenance: string; confidence: string }) {
   return (
-    <span
-      style={{
-        fontSize: 11,
-        fontWeight: 600,
-        color: "white",
-        background: PROVENANCE_COLOR[provenance] ?? "#9ca3af",
-        padding: "2px 8px",
-        borderRadius: 999,
-      }}
-    >
+    <span className={`badge ${PROVENANCE_CLASS[provenance] ?? "badge-simulated"}`}>
       {provenance} · {confidence}
     </span>
   );
@@ -25,25 +24,30 @@ function ProvenanceBadge({ provenance, confidence }: { provenance: string; confi
 
 function LotRow({ lot, primary }: { lot: RecommendedLot; primary?: boolean }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "8px 0",
-        borderBottom: primary ? "none" : "1px solid var(--border)",
-      }}
-    >
+    <div className={primary ? "lot-row lot-row-primary" : "lot-row"}>
       <div>
-        <strong>{lot.full_name ?? lot.name}</strong>
-        {lot.is_unreliable && <span style={{ color: "#8b5cf6", marginLeft: 6 }}>⚠ unreliable</span>}
-        <div style={{ fontSize: 12, color: "#6b7280" }}>
-          {lot.utilization_pct !== null ? `${lot.utilization_pct.toFixed(0)}% full` : "no data"} ·{" "}
-          {lot.walk_minutes} min walk · <ProvenanceBadge provenance={lot.provenance} confidence={lot.confidence} />
+        <span className="lot-name">{lot.full_name ?? lot.name}</span>
+        {lot.is_unreliable && (
+          <span className="badge badge-warn" style={{ marginLeft: 8 }}>
+            Unreliable reading
+          </span>
+        )}
+        <div className="lot-meta">
+          <span className={fullnessClass(lot.utilization_pct)}>
+            {lot.utilization_pct !== null ? `${lot.utilization_pct.toFixed(0)}% full` : "no data"}
+          </span>
+          <span className="lot-meta-sep">·</span>
+          <span>{lot.walk_minutes} min walk</span>
+          <ProvenanceBadge provenance={lot.provenance} confidence={lot.confidence} />
         </div>
       </div>
-      <a href={lot.maps_url} target="_blank" rel="noreferrer" style={{ fontSize: 13, whiteSpace: "nowrap" }}>
-        Get Directions →
+      <a
+        href={lot.maps_url}
+        target="_blank"
+        rel="noreferrer"
+        className={primary ? "btn btn-primary btn-sm" : "btn btn-ghost btn-sm"}
+      >
+        Directions
       </a>
     </div>
   );
@@ -53,35 +57,37 @@ export default function ClassPlanCard({ plan }: { plan: ClassPlan }) {
   const arrival = new Date(plan.target_arrival);
 
   return (
-    <div style={{ border: "1px solid var(--border)", borderRadius: 8, padding: 16, marginBottom: 16 }}>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <h3 style={{ margin: 0 }}>{plan.course}</h3>
-        <span style={{ fontSize: 13, color: "#6b7280" }}>
+    <article className="plan-card">
+      <div className="plan-card-head">
+        <h3>{plan.course}</h3>
+        <span className="plan-card-when">
+          Arrive by{" "}
           {arrival.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })}{" "}
           {arrival.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}
         </span>
       </div>
 
-      <div style={{ marginTop: 8 }}>
+      <div className="plan-card-body">
         <LotRow lot={plan.recommended} primary />
+
+        {plan.alternates.length > 0 && (
+          <details className="plan-alternates">
+            <summary>
+              {plan.alternates.length} alternate{plan.alternates.length > 1 ? "s" : ""}
+            </summary>
+            {plan.alternates.map((lot) => (
+              <LotRow key={lot.facility_id} lot={lot} />
+            ))}
+          </details>
+        )}
+
+        {plan.fallback_chain.length > 0 && (
+          <p className="plan-fallback">
+            If it's full, the wayfinding loop sends you to{" "}
+            {plan.fallback_chain.map((f) => f.name).join(" → ")}
+          </p>
+        )}
       </div>
-
-      {plan.alternates.length > 0 && (
-        <details style={{ marginTop: 4 }}>
-          <summary style={{ fontSize: 13, color: "#2563eb", cursor: "pointer" }}>
-            {plan.alternates.length} alternate{plan.alternates.length > 1 ? "s" : ""}
-          </summary>
-          {plan.alternates.map((lot) => (
-            <LotRow key={lot.facility_id} lot={lot} />
-          ))}
-        </details>
-      )}
-
-      {plan.fallback_chain.length > 0 && (
-        <p style={{ fontSize: 12, color: "#b91c1c", marginTop: 8 }}>
-          If full, next on the wayfinding loop: {plan.fallback_chain.map((f) => f.name).join(" → ")}
-        </p>
-      )}
-    </div>
+    </article>
   );
 }

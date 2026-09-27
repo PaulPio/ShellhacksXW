@@ -7,6 +7,24 @@ import type { Facility } from "../lib/types";
 const FIU_MMC_CENTER: [number, number] = [25.7565, -80.3753];
 const REFRESH_MS = 25_000;
 
+/*
+ * The fullness ramp is lightness-ordered as well as hue-ordered, so the three
+ * states stay distinguishable for red/green colour blindness and in greyscale.
+ */
+const FILL_OK = "#1f7a4d";
+const FILL_WARN = "#d99400";
+const FILL_BUSY = "#b3261e";
+const FILL_UNRELIABLE = "#6d28d9";
+const FILL_NODATA = "#8b95a5";
+
+const LEGEND = [
+  { color: FILL_OK, label: "Under 60% full" },
+  { color: FILL_WARN, label: "60–85% full" },
+  { color: FILL_BUSY, label: "Over 85% full" },
+  { color: FILL_UNRELIABLE, label: "Unreliable reading" },
+  { color: FILL_NODATA, label: "No data" },
+];
+
 /**
  * Leaflet measures its container's pixel size once at mount. In a flex
  * layout (needed so the map fills whatever space is left under a NavBar
@@ -29,11 +47,11 @@ function MapResizeHandler() {
 }
 
 function colorForPct(pct: number | null, isUnreliable: boolean): string {
-  if (isUnreliable) return "#8b5cf6"; // purple = flagged unreliable/event-day
-  if (pct === null) return "#9ca3af"; // gray = no data
-  if (pct < 60) return "#22c55e"; // green
-  if (pct < 85) return "#eab308"; // yellow
-  return "#ef4444"; // red
+  if (isUnreliable) return FILL_UNRELIABLE;
+  if (pct === null) return FILL_NODATA;
+  if (pct < 60) return FILL_OK;
+  if (pct < 85) return FILL_WARN;
+  return FILL_BUSY;
 }
 
 async function fetchFacilities(includeHidden: boolean): Promise<Facility[]> {
@@ -70,36 +88,30 @@ export default function MapView() {
   }, [showHidden]);
 
   return (
-    <div
-      style={{
-        position: "relative",
-        display: "flex",
-        flexDirection: "column",
-        flex: 1,
-        minHeight: 400,
-        width: "100%",
-      }}
-    >
-      <label
-        style={{
-          position: "absolute",
-          top: 10,
-          right: 10,
-          zIndex: 1000,
-          background: "white",
-          padding: "6px 10px",
-          borderRadius: 6,
-          fontSize: 13,
-          boxShadow: "0 1px 4px rgba(0,0,0,0.2)",
-        }}
-      >
-        <input
-          type="checkbox"
-          checked={showHidden}
-          onChange={(e) => setShowHidden(e.target.checked)}
-        />{" "}
-        Show hidden facilities (debug)
-      </label>
+    <div className="map-wrap">
+      <div className="map-panel">
+        <div className="map-panel-head">Lot fullness</div>
+        <div className="map-legend">
+          {LEGEND.map((item) => (
+            <div key={item.label} className="map-legend-item">
+              <span
+                className="map-legend-swatch"
+                style={{ background: item.color }}
+                aria-hidden="true"
+              />
+              {item.label}
+            </div>
+          ))}
+        </div>
+        <label className="map-panel-foot">
+          <input
+            type="checkbox"
+            checked={showHidden}
+            onChange={(e) => setShowHidden(e.target.checked)}
+          />
+          Show hidden facilities
+        </label>
+      </div>
 
       <MapContainer center={FIU_MMC_CENTER} zoom={16} style={{ flex: 1, width: "100%" }}>
         <MapResizeHandler />
@@ -118,29 +130,28 @@ export default function MapView() {
                 radius={f.display_hidden ? 8 : 12}
                 pathOptions={{
                   color: f.display_hidden ? "#6b7280" : colorForPct(displayPct, f.is_unreliable),
+                  weight: 2,
                   fillColor: colorForPct(displayPct, f.is_unreliable),
                   fillOpacity: f.display_hidden ? 0.4 : 0.8,
                   dashArray: f.display_hidden ? "4 3" : undefined,
                 }}
               >
                 <Popup>
-                  <strong>{f.full_name ?? f.name}</strong>
-                  <br />
-                  {displayPct !== null ? `${displayPct.toFixed(0)}% full` : "No data"}
+                  <span className="lot-popup-name">{f.full_name ?? f.name}</span>
+                  <span className="lot-popup-fill">
+                    {displayPct !== null ? `${displayPct.toFixed(0)}% full` : "No data"} ·{" "}
+                    {f.current_total ?? "?"} / {f.max_occupancy_total ?? "?"} spaces
+                  </span>
                   {f.is_unreliable && (
-                    <>
-                      <br />
-                      <span style={{ color: "#8b5cf6" }}>⚠ unreliable / event-day reading</span>
-                    </>
+                    <span className="lot-popup-note" style={{ color: FILL_UNRELIABLE }}>
+                      Unreliable / event-day reading
+                    </span>
                   )}
                   {f.display_hidden && (
-                    <>
-                      <br />
-                      <em>hidden from default view</em>
-                    </>
+                    <span className="lot-popup-note" style={{ color: FILL_NODATA }}>
+                      Hidden from the default view
+                    </span>
                   )}
-                  <br />
-                  {f.current_total ?? "?"} / {f.max_occupancy_total ?? "?"} spaces
                 </Popup>
               </CircleMarker>
             );

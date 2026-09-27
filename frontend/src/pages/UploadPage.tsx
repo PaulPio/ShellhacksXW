@@ -33,34 +33,47 @@ export default function UploadPage() {
 
   return (
     <div className="page">
-      <h2>Upload your schedule</h2>
-      <p className="page-intro">
-        PDF (FIU "Schedule of Classes" export) or a screenshot. Your file is parsed in memory
-        and discarded immediately — never stored.
+      <div className="page-header">
+        <span className="eyebrow">Step 01</span>
+        <h1>Upload your schedule</h1>
+        <p className="lede">
+          Your FIU "Schedule of Classes" PDF export, or a screenshot of it. We read the course
+          codes, meeting times and buildings, then you get a chance to correct them.
+        </p>
+      </div>
+
+      <label className="dropzone">
+        <span className="dropzone-title">Choose a PDF or screenshot</span>
+        <span className="muted">or drag one onto this area</span>
+        <input type="file" accept=".pdf,image/*" onChange={handleFile} disabled={busy} />
+      </label>
+
+      <p className="privacy-note">
+        Your file is parsed in memory and discarded immediately. It is never written to disk and
+        never stored in our database — there is no column for it.
       </p>
 
-      <div style={{ textAlign: "center" }}>
-        <input type="file" accept=".pdf,image/*" onChange={handleFile} disabled={busy} />
-      </div>
-      {busy && (
-        <p style={{ textAlign: "center", marginTop: 12 }}>
-          <Spinner label="Parsing your schedule…" />
-        </p>
-      )}
+      {busy && <Spinner label="Parsing your schedule…" />}
+
       {error && (
-        <p style={{ color: "#b91c1c", textAlign: "center", marginTop: 12 }}>
-          Couldn't parse that file: {error}
-        </p>
+        <div className="alert alert-error" role="alert">
+          <strong>Couldn't parse that file.</strong> {error}
+        </div>
       )}
 
       {classes && (
-        <div style={{ marginTop: 24 }}>
+        <div style={{ marginTop: 32 }}>
+          <span className="eyebrow">Step 02</span>
+          <h2 className="section-title">Check what we read</h2>
+          <p className="muted" style={{ margin: "20px 0 16px" }}>
+            Edit any course code that came through wrong. Rows without a building can't be planned
+            for — FIU's class search API has no room field, so we only know what your schedule
+            printed.
+          </p>
           <TimetableTable classes={classes} onChange={setClasses} />
-          <div style={{ textAlign: "center" }}>
-            <button onClick={handleConfirm} style={{ marginTop: 16, padding: "8px 16px", fontWeight: 600 }}>
-              Confirm schedule →
-            </button>
-          </div>
+          <button onClick={handleConfirm} className="btn btn-primary" style={{ marginTop: 20 }}>
+            Build my parking plan
+          </button>
         </div>
       )}
     </div>

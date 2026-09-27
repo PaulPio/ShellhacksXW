@@ -8,23 +8,25 @@ interface Stats {
   unreliableCount: number | null;
 }
 
-function Badge({ label, color }: { label: string; color: string }) {
-  return (
-    <span
-      style={{
-        background: color,
-        color: "white",
-        fontSize: 12,
-        fontWeight: 600,
-        padding: "2px 10px",
-        borderRadius: 999,
-        marginRight: 6,
-      }}
-    >
-      {label}
-    </span>
-  );
-}
+const KEY = [
+  {
+    label: "live",
+    badgeClass: "badge-live",
+    description: "A real reading from the FIU parking API.",
+  },
+  {
+    label: "modelled",
+    badgeClass: "badge-modelled",
+    description:
+      "Derived from real registrar section data, then calibrated against observed occupancy.",
+  },
+  {
+    label: "simulated",
+    badgeClass: "badge-simulated",
+    description:
+      "Not enough calibration history yet — falls back to the lot's current live reading.",
+  },
+];
 
 export default function ProvenancePage() {
   const [stats, setStats] = useState<Stats>({
@@ -63,60 +65,54 @@ export default function ProvenancePage() {
 
   return (
     <div className="page">
-      <h2>Data provenance</h2>
-      <p className="page-intro">
-        Every number in PantherPark is tagged with where it came from. We never present a guess as a
-        measurement.
+      <div className="page-header">
+        <span className="eyebrow">Transparency</span>
+        <h1>Data provenance</h1>
+        <p className="lede">
+          Every number in PantherPark is tagged with where it came from. We never present a guess
+          as a measurement.
+        </p>
+      </div>
+
+      <div className="provenance-key">
+        {KEY.map((row) => (
+          <div key={row.label} className="provenance-key-row">
+            <span>
+              <span className={`badge ${row.badgeClass}`}>{row.label}</span>
+            </span>
+            <span>{row.description}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="stat-panel">
+        <div className="stat-figure">
+          {stats.sampleCount !== null ? stats.sampleCount.toLocaleString() : "…"}
+        </div>
+        <div className="stat-caption">readings collected since {collectionStartLabel}</div>
+        <div className="stat-notes">
+          <span>
+            {stats.facilityCount ?? "…"} facilities tracked · {stats.unreliableCount ?? 0} currently
+            flagged unreliable (occupancy exceeds reported capacity — e.g. event-day overshoot).
+          </span>
+          <span>
+            Collection started on a weekend, so weekday demand calibration is still building up.
+            Expect <strong>simulated</strong> tags until enough weekday samples land.
+          </span>
+        </div>
+      </div>
+
+      <h2 className="section-title" style={{ marginTop: 48 }}>
+        Modelled campus demand curve
+      </h2>
+      <p className="muted" style={{ marginTop: 20 }}>
+        Built from real Fall 2026 registrar sections, filtered to in-person classes at MMC. This
+        shapes every lot's predicted demand; calibration then scales it per lot using live observed
+        occupancy.
       </p>
-
-      <div style={{ display: "flex", gap: 8, margin: "12px 0" }}>
-        <Badge label="live" color="#16a34a" />
-        <span style={{ fontSize: 13 }}>a real reading from the FIU parking API</span>
+      <div className="chart-frame">
+        <img src="/demand_chart_campus.png" alt="Campus-wide parking demand curve by weekday" />
       </div>
-      <div style={{ display: "flex", gap: 8, margin: "12px 0" }}>
-        <Badge label="modelled" color="#2563eb" />
-        <span style={{ fontSize: 13 }}>derived from real registrar section data + calibration against observed occupancy</span>
-      </div>
-      <div style={{ display: "flex", gap: 8, margin: "12px 0" }}>
-        <Badge label="simulated" color="#9ca3af" />
-        <span style={{ fontSize: 13 }}>not enough calibration history yet -- falls back to the lot's current live reading</span>
-      </div>
-
-      <div
-        style={{
-          background: "var(--code-bg)",
-          border: "1px solid var(--border)",
-          borderRadius: 8,
-          padding: 16,
-          marginTop: 20,
-        }}
-      >
-        <strong>
-          {stats.sampleCount !== null ? stats.sampleCount.toLocaleString() : "…"} readings collected
-        </strong>{" "}
-        since {collectionStartLabel}
-        <br />
-        <span style={{ fontSize: 13, color: "#6b7280" }}>
-          {stats.facilityCount ?? "…"} facilities tracked · {stats.unreliableCount ?? 0} currently flagged
-          unreliable (occupancy exceeds reported capacity -- e.g. event-day overshoot)
-        </span>
-        <br />
-        <span style={{ fontSize: 13, color: "#6b7280" }}>
-          Collection started on a weekend, so weekday demand calibration is still building up -- see{" "}
-          <strong>simulated</strong> tags above until enough weekday samples land.
-        </span>
-      </div>
-
-      <h3 style={{ marginTop: 32 }}>Modelled campus-wide demand curve</h3>
-      <p style={{ fontSize: 13, color: "#6b7280" }}>
-        Built from real Fall 2026 registrar sections (filtered to MMC, in-person). This shapes every lot's
-        predicted demand; calibration then scales it per lot using live observed occupancy.
-      </p>
-      <img
-        src="/demand_chart_campus.png"
-        alt="Campus-wide demand curve by weekday"
-        style={{ maxWidth: "100%", display: "block", margin: "0 auto" }}
-      />
     </div>
   );
 }

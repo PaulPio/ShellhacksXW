@@ -1,53 +1,126 @@
+/*
+ * PantherPark design tokens.
+ *
+ * Built to sit next to FIU's own web properties: FIU Blue (#081E3F) as the
+ * grounding colour, FIU Gold (#B6862C) as the single accent, Frank New as the
+ * brand face with Helvetica as the sanctioned fallback (FIU's brand guide
+ * names Helvetica explicitly when Frank New isn't available, and Frank New is
+ * Adobe-licensed so it can't be webfont-served here).
+ *
+ * The gold is deliberately reserved: eyebrows, rules, and the primary CTA.
+ * Everything that encodes *data* -- lot fullness, provenance, urgency -- uses
+ * the status ramp instead, so brand colour never competes with meaning.
+ */
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  /* Brand */
+  --fiu-blue: #081e3f;
+  --fiu-blue-800: #0e2c57;
+  --fiu-blue-700: #163c72;
+  --fiu-blue-600: #1f508f;
+  --fiu-gold: #b6862c;
+  --fiu-gold-600: #9a7024;
+  --fiu-gold-300: #d9ab48;
+  --fiu-gold-100: #f6edd8;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  /* Neutrals */
+  --white: #ffffff;
+  --surface: #ffffff;
+  --surface-sunken: #f4f6f9;
+  --surface-raised: #ffffff;
+  --border: #dde2ea;
+  --border-strong: #c2cad6;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
+  --text: #4a5567;
+  --text-h: var(--fiu-blue);
+  --text-muted: #6d7889;
+  --text-invert: #ffffff;
+  --text-on-blue-dim: #b9c4d6;
+
+  /* Status ramp -- data, never decoration */
+  --ok: #1f7a4d;
+  --ok-bg: #e6f4ec;
+  --warn: #9a6100;
+  --warn-bg: #fdf1dc;
+  --busy: #b3261e;
+  --busy-bg: #fbe9e7;
+  --info: #1f508f;
+  --info-bg: #e7eefa;
+  --neutral: #6d7889;
+  --neutral-bg: #eef1f5;
+
+  --accent: var(--fiu-blue-600);
+  --link: var(--fiu-blue-600);
+
+  --radius-sm: 2px;
+  --radius: 4px;
+  --radius-lg: 8px;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 1px 2px rgba(8, 30, 63, 0.08);
+  --shadow: 0 2px 4px rgba(8, 30, 63, 0.06), 0 8px 24px -8px rgba(8, 30, 63, 0.16);
+  --shadow-lg: 0 4px 8px rgba(8, 30, 63, 0.08), 0 24px 48px -16px rgba(8, 30, 63, 0.24);
+
+  --sans: 'Frank New', 'Helvetica Neue', Helvetica, Arial, system-ui, sans-serif;
+  --heading: var(--sans);
+  --mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --nav-h: 64px;
+  --measure: 68ch;
+
+  font: 16px/1.55 var(--sans);
   color-scheme: light dark;
   color: var(--text);
-  background: var(--bg);
+  background: var(--surface);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
+/*
+ * FIU's own sites are light-only, so dark mode is our own extension: the same
+ * palette re-grounded on FIU Blue rather than a neutral charcoal, and the gold
+ * lifted to --fiu-gold-300 so it still clears 4.5:1 on the darker surfaces.
+ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface: #0b1626;
+    --surface-sunken: #08111e;
+    --surface-raised: #122036;
+    --border: #23334c;
+    --border-strong: #354866;
+
+    --text: #b3bfd1;
+    --text-h: #f1f5fa;
+    --text-muted: #8d9bb1;
+
+    --ok: #4cc38a;
+    --ok-bg: rgba(76, 195, 138, 0.14);
+    --warn: #e0a234;
+    --warn-bg: rgba(224, 162, 52, 0.14);
+    --busy: #f4776b;
+    --busy-bg: rgba(244, 119, 107, 0.14);
+    --info: #7cb0f5;
+    --info-bg: rgba(124, 176, 245, 0.14);
+    --neutral: #8d9bb1;
+    --neutral-bg: rgba(141, 155, 177, 0.14);
+
+    --accent: var(--fiu-gold-300);
+    --link: #8fb8f7;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 8px 24px -8px rgba(0, 0, 0, 0.6);
+    --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.35), 0 24px 48px -16px rgba(0, 0, 0, 0.7);
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
+* {
+  box-sizing: border-box;
+}
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+body {
+  margin: 0;
+  background: var(--surface);
 }
 
 #root {
@@ -55,66 +128,235 @@
   min-height: 100svh;
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
 }
 
-body {
+/* ---------- Type scale ---------- */
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--heading);
+  color: var(--text-h);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+  margin: 0;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: clamp(2.25rem, 1.4rem + 3.4vw, 3.75rem);
+}
+
+h2 {
+  font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+}
+
+h3 {
+  font-size: 1.1875rem;
+  letter-spacing: -0.01em;
+}
+
+h4 {
+  font-size: 1rem;
+  letter-spacing: 0;
+}
+
+p {
   margin: 0;
 }
 
-* {
-  box-sizing: border-box;
+/*
+ * The eyebrow is FIU's most recognisable text device: a short gold,
+ * letter-spaced, all-caps label sitting directly above a heading.
+ */
+.eyebrow {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fiu-gold-600);
+  margin-bottom: 10px;
 }
 
-a {
-  color: var(--accent);
+.eyebrow-invert {
+  color: var(--fiu-gold-300);
 }
+
+@media (prefers-color-scheme: dark) {
+  .eyebrow {
+    color: var(--fiu-gold-300);
+  }
+}
+
+.lede {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--text);
+  max-width: var(--measure);
+}
+
+.muted {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+/* ---------- Links ---------- */
+
+a {
+  color: var(--link);
+  text-decoration-color: color-mix(in srgb, var(--link) 35%, transparent);
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  text-decoration-color: currentColor;
+}
+
+/* ---------- Controls ---------- */
 
 button {
   font: inherit;
   cursor: pointer;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
-}
-
-code,
-.counter {
-  font-family: var(--mono);
+.btn {
   display: inline-flex;
-  border-radius: 4px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 22px;
+  border-radius: var(--radius);
+  border: 2px solid transparent;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-primary {
+  background: var(--fiu-gold);
+  border-color: var(--fiu-gold);
+  color: var(--fiu-blue);
+}
+
+.btn-primary:hover {
+  background: var(--fiu-gold-600);
+  border-color: var(--fiu-gold-600);
+  color: var(--white);
+}
+
+.btn-secondary {
+  background: var(--fiu-blue);
+  border-color: var(--fiu-blue);
+  color: var(--white);
+}
+
+.btn-secondary:hover {
+  background: var(--fiu-blue-700);
+  border-color: var(--fiu-blue-700);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: var(--border-strong);
   color: var(--text-h);
+}
+
+.btn-ghost:hover {
+  border-color: var(--fiu-blue);
+  background: var(--surface-sunken);
+}
+
+/* On a blue field the outline button has to be drawn in white, not navy. */
+.btn-outline-invert {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.55);
+  color: var(--white);
+}
+
+.btn-outline-invert:hover {
+  border-color: var(--white);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-sm {
+  padding: 6px 14px;
+  font-size: 0.8125rem;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* A button that should read as a link (mode toggles, inline actions). */
+.btn-link {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+input[type='email'],
+input[type='password'],
+input[type='text'],
+select {
+  font: inherit;
+  width: 100%;
+  padding: 10px 12px;
+  color: var(--text-h);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+}
+
+input::placeholder {
+  color: var(--text-muted);
+}
+
+/* One visible focus treatment everywhere, gold so it reads on navy too. */
+:where(a, button, input, select, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--fiu-gold-300);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
 }
 
 code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+  font-family: var(--mono);
+  font-size: 0.875em;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-sunken);
+  color: var(--text-h);
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 24px 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
