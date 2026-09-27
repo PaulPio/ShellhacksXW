@@ -6,7 +6,7 @@ import PlanPage from "./pages/PlanPage";
 import ProvenancePage from "./pages/ProvenancePage";
 import GuestBadge from "./components/GuestBadge";
 import ErrorBoundary from "./components/ErrorBoundary";
-import { AuthProvider } from "./context/AuthProvider";
+import { AuthProvider, useAuth } from "./context/AuthProvider";
 import "./App.css";
 
 function HomePage() {
@@ -24,6 +24,7 @@ function HomePage() {
 }
 
 function NavBar() {
+  const { isGuest, loading } = useAuth();
   return (
     <nav className="navbar">
       <div className="navbar-links">
@@ -33,7 +34,10 @@ function NavBar() {
         <Link to="/map">Map</Link>
         <Link to="/upload">Upload</Link>
         <Link to="/provenance">Data</Link>
-        <Link to="/login">Log in</Link>
+        {/* Only show "Log in" when actually logged out -- otherwise it stuck
+            around after a real login, which was confusing (GuestBadge
+            already shows the signed-in email + a Sign out button). */}
+        {!loading && isGuest && <Link to="/login">Log in</Link>}
       </div>
       <GuestBadge />
     </nav>
