@@ -1,0 +1,35 @@
+# envs
+.env
+.env.local
+**/.env
+!.env.example
+!**/.env.example
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# node
+node_modules/
+dist/
+.vite/
+
+# data / caches (never commit raw external responses or the collector's local backup)
+/data/cache/
+/data/snapshots.jsonl
+/data/collector.log
+
+# supabase local cli cache
+/supabase/.temp/
+
+# original student schedule fixture stays local only, never pushed
+FIU_PRNT_SCH.pdf
+
+# os
+.DS_Store
+Thumbs.db
+
+# local browser-testing artifacts
+.playwright-mcp/

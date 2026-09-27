@@ -1,0 +1,7 @@
+-- Placeholder: this version is already applied on the linked remote project
+-- (ResumeFit) from its own prior development, before this repo existed.
+-- We don't have ResumeFit's original migration source, so this file is
+-- intentionally empty (no-op) -- it exists only so the Supabase CLI's
+-- local/remote migration history reconciles, allowing new pantherpark_*
+-- migrations to be pushed without attempting to re-run or alter
+-- ResumeFit's existing schema.
