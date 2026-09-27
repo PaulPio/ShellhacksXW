@@ -22,7 +22,9 @@ app = FastAPI(title="PantherPark API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    # Vite shifts to the next free port (5174, 5175, ...) if 5173 is taken --
+    # match any localhost port rather than hardcoding one.
+    allow_origin_regex=r"http://localhost:\d+",
     allow_methods=["*"],
     allow_headers=["*"],
 )

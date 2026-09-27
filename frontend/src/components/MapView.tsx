@@ -1,11 +1,32 @@
 import { useEffect, useState } from "react";
-import { CircleMarker, MapContainer, Popup, TileLayer } from "react-leaflet";
+import { CircleMarker, MapContainer, Popup, TileLayer, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { supabase } from "../lib/supabaseClient";
 import type { Facility } from "../lib/types";
 
 const FIU_MMC_CENTER: [number, number] = [25.7565, -80.3753];
 const REFRESH_MS = 25_000;
+
+/**
+ * Leaflet measures its container's pixel size once at mount. In a flex
+ * layout (needed so the map fills whatever space is left under a NavBar
+ * that can wrap to two lines on narrow screens), that size isn't always
+ * settled in the same paint -- Leaflet can init against a 0-height
+ * container. Re-measuring after mount and on resize fixes it reliably.
+ */
+function MapResizeHandler() {
+  const map = useMap();
+  useEffect(() => {
+    const invalidate = () => map.invalidateSize();
+    const timeoutId = setTimeout(invalidate, 0);
+    window.addEventListener("resize", invalidate);
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener("resize", invalidate);
+    };
+  }, [map]);
+  return null;
+}
 
 function colorForPct(pct: number | null, isUnreliable: boolean): string {
   if (isUnreliable) return "#8b5cf6"; // purple = flagged unreliable/event-day
@@ -49,7 +70,16 @@ export default function MapView() {
   }, [showHidden]);
 
   return (
-    <div style={{ position: "relative", height: "100%", width: "100%" }}>
+    <div
+      style={{
+        position: "relative",
+        display: "flex",
+        flexDirection: "column",
+        flex: 1,
+        minHeight: 400,
+        width: "100%",
+      }}
+    >
       <label
         style={{
           position: "absolute",
@@ -71,7 +101,8 @@ export default function MapView() {
         Show hidden facilities (debug)
       </label>
 
-      <MapContainer center={FIU_MMC_CENTER} zoom={16} style={{ height: "100%", width: "100%" }}>
+      <MapContainer center={FIU_MMC_CENTER} zoom={16} style={{ flex: 1, width: "100%" }}>
+        <MapResizeHandler />
         <TileLayer
           attribution='&copy; OpenStreetMap contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { getPlan, type ClassPlan, type ParsedClass } from "../lib/api";
 import ClassPlanCard from "../components/ClassPlanCard";
 import LeaveNowBanner from "../components/LeaveNowBanner";
+import Spinner from "../components/Spinner";
 
 export default function PlanPage() {
   const [plans, setPlans] = useState<ClassPlan[] | null>(null);
@@ -22,8 +23,8 @@ export default function PlanPage() {
 
   if (classCount === 0) {
     return (
-      <div style={{ padding: 16 }}>
-        <p>
+      <div className="page">
+        <p style={{ textAlign: "center" }}>
           No schedule loaded yet. <Link to="/upload">Upload one first →</Link>
         </p>
       </div>
@@ -33,11 +34,19 @@ export default function PlanPage() {
   return (
     <div>
       {plans && plans.length > 0 && <LeaveNowBanner plans={plans} />}
-      <div style={{ maxWidth: 640, margin: "24px auto", padding: 16 }}>
+      <div className="page">
         <h2>Your parking plan</h2>
-        {error && <p style={{ color: "#b91c1c" }}>{error}</p>}
-        {!plans && !error && <p>Building your plan…</p>}
-        {plans && plans.length === 0 && <p>No in-person classes with a known building to plan for.</p>}
+        {error && (
+          <p style={{ color: "#b91c1c", textAlign: "center" }}>Couldn't build a plan: {error}</p>
+        )}
+        {!plans && !error && (
+          <p style={{ textAlign: "center" }}>
+            <Spinner label="Building your plan…" />
+          </p>
+        )}
+        {plans && plans.length === 0 && (
+          <p style={{ textAlign: "center" }}>No in-person classes with a known building to plan for.</p>
+        )}
         {plans?.map((plan, i) => (
           <ClassPlanCard key={i} plan={plan} />
         ))}

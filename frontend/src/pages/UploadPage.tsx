@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ingestSchedule, type ParsedClass } from "../lib/api";
 import TimetableTable from "../components/TimetableTable";
+import Spinner from "../components/Spinner";
 
 export default function UploadPage() {
   const [classes, setClasses] = useState<ParsedClass[] | null>(null);
@@ -31,23 +32,35 @@ export default function UploadPage() {
   }
 
   return (
-    <div style={{ maxWidth: 720, margin: "32px auto", padding: 16 }}>
+    <div className="page">
       <h2>Upload your schedule</h2>
-      <p style={{ fontSize: 13, color: "#6b7280" }}>
+      <p className="page-intro">
         PDF (FIU "Schedule of Classes" export) or a screenshot. Your file is parsed in memory
         and discarded immediately — never stored.
       </p>
 
-      <input type="file" accept=".pdf,image/*" onChange={handleFile} disabled={busy} />
-      {busy && <p>Parsing…</p>}
-      {error && <p style={{ color: "#b91c1c" }}>{error}</p>}
+      <div style={{ textAlign: "center" }}>
+        <input type="file" accept=".pdf,image/*" onChange={handleFile} disabled={busy} />
+      </div>
+      {busy && (
+        <p style={{ textAlign: "center", marginTop: 12 }}>
+          <Spinner label="Parsing your schedule…" />
+        </p>
+      )}
+      {error && (
+        <p style={{ color: "#b91c1c", textAlign: "center", marginTop: 12 }}>
+          Couldn't parse that file: {error}
+        </p>
+      )}
 
       {classes && (
         <div style={{ marginTop: 24 }}>
           <TimetableTable classes={classes} onChange={setClasses} />
-          <button onClick={handleConfirm} style={{ marginTop: 16, padding: "8px 16px", fontWeight: 600 }}>
-            Confirm schedule →
-          </button>
+          <div style={{ textAlign: "center" }}>
+            <button onClick={handleConfirm} style={{ marginTop: 16, padding: "8px 16px", fontWeight: 600 }}>
+              Confirm schedule →
+            </button>
+          </div>
         </div>
       )}
     </div>

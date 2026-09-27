@@ -31,7 +31,7 @@ function LotRow({ lot, primary }: { lot: RecommendedLot; primary?: boolean }) {
         justifyContent: "space-between",
         alignItems: "center",
         padding: "8px 0",
-        borderBottom: primary ? "none" : "1px solid #f3f4f6",
+        borderBottom: primary ? "none" : "1px solid var(--border)",
       }}
     >
       <div>
@@ -53,7 +53,7 @@ export default function ClassPlanCard({ plan }: { plan: ClassPlan }) {
   const arrival = new Date(plan.target_arrival);
 
   return (
-    <div style={{ border: "1px solid #e5e7eb", borderRadius: 8, padding: 16, marginBottom: 16 }}>
+    <div style={{ border: "1px solid var(--border)", borderRadius: 8, padding: 16, marginBottom: 16 }}>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <h3 style={{ margin: 0 }}>{plan.course}</h3>
         <span style={{ fontSize: 13, color: "#6b7280" }}>

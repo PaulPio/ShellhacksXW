@@ -62,9 +62,9 @@ export default function ProvenancePage() {
     : "…";
 
   return (
-    <div style={{ maxWidth: 720, margin: "24px auto", padding: 16 }}>
+    <div className="page">
       <h2>Data provenance</h2>
-      <p style={{ color: "#6b7280", fontSize: 14 }}>
+      <p className="page-intro">
         Every number in PantherPark is tagged with where it came from. We never present a guess as a
         measurement.
       </p>
@@ -84,8 +84,8 @@ export default function ProvenancePage() {
 
       <div
         style={{
-          background: "#f9fafb",
-          border: "1px solid #e5e7eb",
+          background: "var(--code-bg)",
+          border: "1px solid var(--border)",
           borderRadius: 8,
           padding: 16,
           marginTop: 20,
@@ -112,7 +112,11 @@ export default function ProvenancePage() {
         Built from real Fall 2026 registrar sections (filtered to MMC, in-person). This shapes every lot's
         predicted demand; calibration then scales it per lot using live observed occupancy.
       </p>
-      <img src="/demand_chart_campus.png" alt="Campus-wide demand curve by weekday" style={{ maxWidth: "100%" }} />
+      <img
+        src="/demand_chart_campus.png"
+        alt="Campus-wide demand curve by weekday"
+        style={{ maxWidth: "100%", display: "block", margin: "0 auto" }}
+      />
     </div>
   );
 }

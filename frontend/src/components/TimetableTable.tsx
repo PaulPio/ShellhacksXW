@@ -16,7 +16,7 @@ export default function TimetableTable({ classes, onChange }: Props) {
   return (
     <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
       <thead>
-        <tr style={{ textAlign: "left", borderBottom: "2px solid #e5e7eb" }}>
+        <tr style={{ textAlign: "left", borderBottom: "2px solid var(--border)" }}>
           <th style={{ padding: 8 }}>Course</th>
           <th style={{ padding: 8 }}>Days</th>
           <th style={{ padding: 8 }}>Time</th>
@@ -26,7 +26,7 @@ export default function TimetableTable({ classes, onChange }: Props) {
       </thead>
       <tbody>
         {classes.map((c, idx) => (
-          <tr key={idx} style={{ borderBottom: "1px solid #f3f4f6" }}>
+          <tr key={idx} style={{ borderBottom: "1px solid var(--border)" }}>
             <td style={{ padding: 8 }}>
               <input
                 value={c.course}

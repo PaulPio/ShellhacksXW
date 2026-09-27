@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
+import Spinner from "../components/Spinner";
 
 export default function LoginPage() {
   const { signIn, signUp } = useAuth();
@@ -25,7 +26,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{ maxWidth: 360, margin: "48px auto", padding: 16 }}>
+    <div className="page" style={{ maxWidth: 360 }}>
       <h2>{mode === "signin" ? "Log in" : "Create an account"}</h2>
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         <input
@@ -45,7 +46,7 @@ export default function LoginPage() {
         />
         {error && <div style={{ color: "#b91c1c", fontSize: 13 }}>{error}</div>}
         <button type="submit" disabled={busy}>
-          {mode === "signin" ? "Log in" : "Sign up"}
+          {busy ? <Spinner label="Please wait…" /> : mode === "signin" ? "Log in" : "Sign up"}
         </button>
       </form>
 
