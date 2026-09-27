@@ -786,14 +786,16 @@
 }
 
 .dropzone:hover,
-.dropzone:focus-within {
+.dropzone:focus-within,
+.dropzone.is-dragging {
   border-color: var(--fiu-gold);
   background: var(--fiu-gold-100);
 }
 
 @media (prefers-color-scheme: dark) {
   .dropzone:hover,
-  .dropzone:focus-within {
+  .dropzone:focus-within,
+  .dropzone.is-dragging {
     background: rgba(217, 171, 72, 0.08);
   }
 }
