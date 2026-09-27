@@ -1,55 +1,995 @@
+/*
+ * Layout and components.
+ *
+ * Structural conventions borrowed from FIU's own sites: a slim navy utility
+ * strip above the main nav, a gold underline marking the current section, a
+ * full-bleed navy hero with a gold eyebrow, and section headings introduced by
+ * a short gold rule.
+ */
+
+/* ---------- Shell ---------- */
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.app-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
 .page {
-  max-width: 720px;
-  margin: 24px auto;
-  padding: 0 16px 48px;
-  text-align: left;
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 40px 20px 72px;
 }
 
-.page h2 {
-  text-align: center;
+.page-narrow {
+  max-width: 420px;
 }
 
-.page-intro {
-  text-align: center;
-  color: var(--text);
-  font-size: 14px;
-  margin-bottom: 16px;
+.page-wide {
+  max-width: 1080px;
 }
 
-.navbar {
-  height: 56px;
+/* A page whose body is a map: no padding, fills the space under the nav. */
+.page-full {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.page-header {
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.page-header h1 {
+  font-size: clamp(2rem, 1.6rem + 1.6vw, 2.75rem);
+}
+
+.page-header .lede {
+  margin-top: 12px;
+}
+
+/* ---------- Utility strip ---------- */
+
+.utility-bar {
+  background: var(--fiu-blue);
+  color: var(--text-on-blue-dim);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+.utility-bar-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 7px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 0 16px;
+  gap: 16px;
+}
+
+.utility-bar a {
+  color: var(--white);
+  text-decoration: none;
+}
+
+.utility-bar a:hover {
+  text-decoration: underline;
+}
+
+.utility-tag {
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--fiu-gold-300);
+}
+
+/* ---------- Nav ---------- */
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  background: var(--surface);
   border-bottom: 1px solid var(--border);
-  flex-wrap: wrap;
+  box-shadow: var(--shadow-sm);
+}
+
+.navbar-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  min-height: var(--nav-h);
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.navbar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--text-h);
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.navbar-mark {
+  flex: none;
+  width: 30px;
+  height: 30px;
 }
 
 .navbar-links {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 4px;
   flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-.navbar-brand {
-  font-weight: 700;
-  text-decoration: none;
+/*
+ * The 3px transparent bottom border is always present so the link doesn't
+ * shift by 3px when it becomes current.
+ */
+.navbar-link {
+  padding: 8px 12px;
+  font-size: 0.9375rem;
+  font-weight: 600;
   color: var(--text-h);
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+}
+
+.navbar-link:hover {
+  border-bottom-color: var(--border-strong);
+}
+
+.navbar-link.is-current {
+  border-bottom-color: var(--fiu-gold);
+}
+
+.navbar-end {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+@media (max-width: 720px) {
+  .navbar-inner {
+    flex-wrap: wrap;
+    padding: 10px 16px;
+    gap: 8px 12px;
+  }
+  .navbar-links {
+    order: 3;
+    width: 100%;
+    gap: 2px;
+    overflow-x: auto;
+  }
+  .navbar-link {
+    padding: 6px 8px;
+    font-size: 0.875rem;
+  }
+  .navbar-end {
+    order: 2;
+  }
+  .utility-bar-inner {
+    padding: 6px 16px;
+  }
+}
+
+/* ---------- Brand mark ---------- */
+
+.mark-body {
+  fill: var(--fiu-blue);
+}
+
+.mark-letter {
+  fill: var(--white);
+}
+
+.mark-bar {
+  fill: var(--fiu-gold);
+}
+
+@media (prefers-color-scheme: dark) {
+  .mark-body {
+    fill: #e8edf5;
+  }
+  .mark-letter {
+    fill: var(--fiu-blue);
+  }
+  .mark-bar {
+    fill: var(--fiu-gold-300);
+  }
+}
+
+/* ---------- Hero ---------- */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  background: var(--fiu-blue);
+  color: var(--white);
+}
+
+/*
+ * FIU's angular motif: a single diagonal cut with a gold leading edge,
+ * drawn as a gradient rather than an image so it costs nothing and scales.
+ * Decorative only, so it stays out of the accessibility tree.
+ */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: 44%;
+  background: linear-gradient(
+    103deg,
+    transparent 0 38%,
+    var(--fiu-gold) 38% 40.5%,
+    var(--fiu-blue-700) 40.5% 100%
+  );
+  pointer-events: none;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 80px 20px 72px;
+}
+
+.hero-copy {
+  max-width: 620px;
+}
+
+.hero h1 {
+  color: var(--white);
+}
+
+.hero-lede {
+  margin-top: 20px;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: #dbe3ef;
+  max-width: 46ch;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+@media (max-width: 720px) {
+  .hero-inner {
+    padding: 48px 16px 44px;
+  }
+  .hero::after {
+    display: none;
+  }
+}
+
+/* ---------- Sections ---------- */
+
+.section {
+  /*
+   * `width: 100%` matters: .section is a flex item of the column-flex
+   * .app-main, where `margin: 0 auto` cancels the default cross-axis stretch
+   * and the block would otherwise shrink-wrap to its text.
+   */
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 64px 20px;
+}
+
+.section-sunken {
+  max-width: none;
+  background: var(--surface-sunken);
+  border-block: 1px solid var(--border);
+}
+
+.section-sunken > .section-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 64px 20px;
+}
+
+/* Short gold rule under a section heading -- FIU uses this everywhere. */
+.section-title::after {
+  content: '';
+  display: block;
+  width: 56px;
+  height: 4px;
+  margin-top: 16px;
+  background: var(--fiu-gold);
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  margin-top: 36px;
+}
+
+/* ---------- Cards ---------- */
+
+.card {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+
+.card-step {
+  /* Steps carry a gold top rule instead of a number badge. */
+  border-top: 4px solid var(--fiu-gold);
+}
+
+.card-step h3 {
+  margin-bottom: 8px;
+}
+
+.card-step p {
+  color: var(--text);
+  font-size: 0.9375rem;
+}
+
+.step-index {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--fiu-gold-600);
+  margin-bottom: 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .step-index {
+    color: var(--fiu-gold-300);
+  }
+}
+
+/* ---------- Plan cards ---------- */
+
+.plan-card {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.plan-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 16px 20px;
+  background: var(--fiu-blue);
+  color: var(--white);
+}
+
+.plan-card-head h3 {
+  color: var(--white);
+}
+
+.plan-card-when {
+  font-size: 0.8125rem;
+  color: #c6d0e0;
+  white-space: nowrap;
+}
+
+.plan-card-body {
+  padding: 4px 20px 16px;
+}
+
+.lot-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.lot-row:last-child {
+  border-bottom: 0;
+}
+
+/* The recommended lot reads louder than its alternates. */
+.lot-row-primary {
+  border-bottom: 0;
+}
+
+.lot-row-primary .lot-name {
+  font-size: 1.0625rem;
+}
+
+.lot-name {
+  font-weight: 700;
+  color: var(--text-h);
+}
+
+.lot-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.lot-meta-sep {
+  color: var(--border-strong);
+}
+
+.plan-alternates {
+  margin-top: 4px;
+  border-top: 1px solid var(--border);
+}
+
+.plan-alternates > summary {
+  padding: 12px 0 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--link);
+  cursor: pointer;
+}
+
+.plan-fallback {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  background: var(--warn-bg);
+  color: var(--warn);
+  font-size: 0.8125rem;
+}
+
+/* ---------- Badges ---------- */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/*
+ * Provenance and status badges are tinted, not solid: solid saturated pills
+ * fought with the gold CTA for attention and read as buttons.
+ */
+.badge-live {
+  background: var(--ok-bg);
+  color: var(--ok);
+}
+
+.badge-modelled {
+  background: var(--info-bg);
+  color: var(--info);
+}
+
+.badge-simulated {
+  background: var(--neutral-bg);
+  color: var(--neutral);
+}
+
+.badge-warn {
+  background: var(--warn-bg);
+  color: var(--warn);
+}
+
+.badge-busy {
+  background: var(--busy-bg);
+  color: var(--busy);
+}
+
+.badge-guest {
+  background: var(--fiu-gold-100);
+  color: #6f5116;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.75rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .badge-guest {
+    background: rgba(217, 171, 72, 0.16);
+    color: var(--fiu-gold-300);
+  }
+}
+
+.user-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.user-chip-email {
+  max-width: 22ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- Leave-now banner ---------- */
+
+.leave-banner {
+  position: sticky;
+  top: var(--nav-h);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 14px 20px;
+  border-bottom: 1px solid currentColor;
+  font-weight: 700;
+}
+
+.leave-banner-headline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.0625rem;
+}
+
+.leave-banner-detail {
+  font-weight: 500;
+  font-size: 0.875rem;
+  opacity: 0.9;
+}
+
+.leave-banner-leave_now {
+  background: var(--busy-bg);
+  color: var(--busy);
+}
+
+.leave-banner-leave_soon {
+  background: var(--warn-bg);
+  color: var(--warn);
+}
+
+.leave-banner-plenty_of_time {
+  background: var(--ok-bg);
+  color: var(--ok);
+}
+
+/* A slow pulse only on the urgent state, and never under reduced-motion. */
+.leave-banner-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
+.leave-banner-leave_now .leave-banner-dot {
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+/* ---------- Map ---------- */
+
+.map-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 420px;
+  width: 100%;
+}
+
+.map-panel {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1000;
+  width: 208px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.map-panel-head {
+  padding: 10px 14px;
+  background: var(--fiu-blue);
+  color: var(--white);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.map-legend {
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.map-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 0.8125rem;
+  color: var(--text);
+}
+
+.map-legend-swatch {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.map-panel-foot {
+  padding: 9px 14px;
+  border-top: 1px solid var(--border);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.map-panel-foot input {
+  margin: 0;
+  flex: none;
+}
+
+/* Leaflet's popup chrome is styled inline by the library; override it here. */
+.leaflet-popup-content-wrapper {
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  font-family: var(--sans);
+}
+
+.leaflet-popup-content {
+  margin: 14px 16px;
+  line-height: 1.5;
+}
+
+.lot-popup-name {
+  display: block;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--fiu-blue);
+  margin-bottom: 6px;
+}
+
+.lot-popup-fill {
+  font-size: 0.8125rem;
+  color: #4a5567;
+}
+
+.lot-popup-note {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.75rem;
+}
+
+@media (max-width: 560px) {
+  .map-panel {
+    width: calc(100% - 24px);
+    left: 12px;
+    right: 12px;
+  }
+}
+
+/* ---------- Timetable ---------- */
+
+.timetable-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.timetable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  min-width: 560px;
+}
+
+.timetable thead th {
+  position: sticky;
+  top: 0;
+  text-align: left;
+  padding: 11px 14px;
+  background: var(--fiu-blue);
+  color: var(--white);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.timetable tbody td {
+  padding: 12px 14px;
+  border-top: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.timetable tbody tr:nth-child(even) {
+  background: var(--surface-sunken);
+}
+
+.timetable-course-input {
+  width: 110px;
+  padding: 5px 8px;
+  font-weight: 600;
+}
+
+.timetable-course-title {
+  margin-top: 4px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  max-width: 22ch;
+}
+
+/* ---------- Upload ---------- */
+
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 40px 24px;
+  text-align: center;
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface-sunken);
+  cursor: pointer;
+}
+
+.dropzone:hover,
+.dropzone:focus-within {
+  border-color: var(--fiu-gold);
+  background: var(--fiu-gold-100);
+}
+
+@media (prefers-color-scheme: dark) {
+  .dropzone:hover,
+  .dropzone:focus-within {
+    background: rgba(217, 171, 72, 0.08);
+  }
+}
+
+.dropzone-title {
+  font-weight: 700;
+  color: var(--text-h);
+}
+
+.dropzone input[type='file'] {
+  /*
+   * The <label> is the whole dropzone, so the native input is hidden but kept
+   * focusable-by-label and in the accessibility tree.
+   */
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.privacy-note {
+  margin-top: 20px;
+  padding: 14px 16px;
+  border-left: 3px solid var(--fiu-gold);
+  background: var(--surface-sunken);
+  font-size: 0.875rem;
+  color: var(--text);
+}
+
+/* ---------- Auth ---------- */
+
+.auth-card {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--fiu-gold);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  box-shadow: var(--shadow);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0 16px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ---------- Provenance ---------- */
+
+.provenance-key {
+  display: grid;
+  gap: 14px;
+  margin: 28px 0;
+}
+
+.provenance-key-row {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 14px;
+  align-items: start;
+  font-size: 0.9375rem;
+}
+
+@media (max-width: 480px) {
+  .provenance-key-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}
+
+.stat-panel {
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--fiu-blue);
+  border-radius: var(--radius);
+  background: var(--surface-sunken);
+  padding: 20px 22px;
+}
+
+.stat-figure {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-h);
+  line-height: 1.1;
+}
+
+.stat-caption {
+  margin-top: 4px;
+  font-size: 0.9375rem;
+  color: var(--text);
+}
+
+.stat-notes {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  display: grid;
+  gap: 8px;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.chart-frame {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--white);
+}
+
+.chart-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ---------- Feedback ---------- */
+
+.alert {
+  display: flex;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  margin: 16px 0;
+}
+
+.alert-error {
+  background: var(--busy-bg);
+  color: var(--busy);
+}
+
+.alert-info {
+  background: var(--info-bg);
+  color: var(--info);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 56px 20px;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface-sunken);
+}
+
+.empty-state h2 {
+  margin-bottom: 10px;
+}
+
+.empty-state .btn {
+  margin-top: 20px;
+}
+
+.loading-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 40px 0;
+  color: var(--text-muted);
+  font-size: 0.9375rem;
 }
 
 .spinner {
   display: inline-block;
   width: 16px;
   height: 16px;
-  border: 2px solid var(--border);
-  border-top-color: var(--accent);
+  border: 2px solid var(--border-strong);
+  border-top-color: var(--fiu-gold);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
-  vertical-align: middle;
-  margin-right: 8px;
+  flex: none;
 }
 
 @keyframes spin {
@@ -59,21 +999,91 @@
 }
 
 .error-boundary {
-  max-width: 480px;
-  margin: 64px auto;
-  padding: 24px;
+  max-width: 440px;
+  margin: 80px auto;
+  padding: 32px 28px;
   text-align: center;
+  background: var(--surface-raised);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-top: 4px solid var(--busy);
+  border-radius: var(--radius);
 }
 
-@media (max-width: 480px) {
-  .navbar {
-    height: auto;
-    padding: 8px 12px;
-  }
-  .navbar-links {
-    gap: 10px;
-    font-size: 14px;
-  }
+.error-boundary p {
+  margin: 12px 0 20px;
+}
+
+/* ---------- Footer ---------- */
+
+.site-footer {
+  background: var(--fiu-blue);
+  color: var(--text-on-blue-dim);
+  padding: 36px 20px;
+  font-size: 0.8125rem;
+}
+
+.site-footer-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.site-footer strong {
+  display: block;
+  color: var(--white);
+  font-size: 0.9375rem;
+  margin-bottom: 4px;
+}
+
+.site-footer a {
+  color: var(--fiu-gold-300);
+}
+
+/* ---------- Helpers ---------- */
+
+.stack-sm > * + * {
+  margin-top: 8px;
+}
+
+.stack > * + * {
+  margin-top: 16px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Fullness ---------- */
+
+/*
+ * The one figure students scan for. Weighted as well as coloured so the
+ * distinction survives greyscale and red/green colour blindness.
+ */
+.lot-fill-ok,
+.lot-fill-warn,
+.lot-fill-busy {
+  font-weight: 700;
+}
+
+.lot-fill-ok {
+  color: var(--ok);
+}
+
+.lot-fill-warn {
+  color: var(--warn);
+}
+
+.lot-fill-busy {
+  color: var(--busy);
 }

@@ -1,5 +1,9 @@
 import MapView from "../components/MapView";
 
 export default function MapPage() {
-  return <MapView />;
+  return (
+    <div className="page-full">
+      <MapView />
+    </div>
+  );
 }

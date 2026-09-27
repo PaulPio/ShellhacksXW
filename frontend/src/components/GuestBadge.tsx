@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
 
 export default function GuestBadge() {
@@ -5,27 +6,23 @@ export default function GuestBadge() {
 
   if (isGuest) {
     return (
-      <span
-        style={{
-          background: "#fef3c7",
-          color: "#92400e",
-          padding: "3px 10px",
-          borderRadius: 999,
-          fontSize: 12,
-          fontWeight: 600,
-        }}
-      >
-        Guest mode — nothing is saved
-      </span>
+      <div className="user-chip">
+        <span className="badge badge-guest">Guest — nothing saved</span>
+        <Link to="/login" className="btn btn-ghost btn-sm">
+          Log in
+        </Link>
+      </div>
     );
   }
 
   return (
-    <span style={{ fontSize: 13, display: "flex", alignItems: "center", gap: 8 }}>
-      {user?.email}
-      <button onClick={() => signOut()} style={{ fontSize: 12 }}>
+    <div className="user-chip">
+      <span className="user-chip-email" title={user?.email}>
+        {user?.email}
+      </span>
+      <button onClick={() => signOut()} className="btn btn-ghost btn-sm">
         Sign out
       </button>
-    </span>
+    </div>
   );
 }

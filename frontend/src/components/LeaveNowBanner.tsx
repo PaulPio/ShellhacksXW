@@ -1,29 +1,16 @@
 import type { ClassPlan } from "../lib/api";
 
-const STATUS_STYLE: Record<string, { bg: string; fg: string; label: (p: ClassPlan) => string }> = {
-  leave_now: {
-    bg: "#fee2e2",
-    fg: "#991b1b",
-    label: (p) => `Leave now for ${p.course}!`,
-  },
-  leave_soon: {
-    bg: "#fef3c7",
-    fg: "#92400e",
-    label: (p) =>
-      `Leave by ${new Date(p.leave_now.leave_by).toLocaleTimeString(undefined, {
-        hour: "numeric",
-        minute: "2-digit",
-      })} for ${p.course}`,
-  },
-  plenty_of_time: {
-    bg: "#dcfce7",
-    fg: "#166534",
-    label: (p) =>
-      `Leave by ${new Date(p.leave_now.leave_by).toLocaleTimeString(undefined, {
-        hour: "numeric",
-        minute: "2-digit",
-      })} for ${p.course}`,
-  },
+function leaveByLabel(plan: ClassPlan): string {
+  return new Date(plan.leave_now.leave_by).toLocaleTimeString(undefined, {
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
+const STATUS_LABEL: Record<string, (p: ClassPlan) => string> = {
+  leave_now: (p) => `Leave now for ${p.course}`,
+  leave_soon: (p) => `Leave by ${leaveByLabel(p)} for ${p.course}`,
+  plenty_of_time: (p) => `Leave by ${leaveByLabel(p)} for ${p.course}`,
 };
 
 /** Picks whichever plan's leave-by time is soonest -- that's "the next class." */
@@ -38,27 +25,19 @@ export default function LeaveNowBanner({ plans }: { plans: ClassPlan[] }) {
   const plan = nextUpPlan(plans);
   if (!plan) return null;
 
-  const style = STATUS_STYLE[plan.leave_now.status];
+  const status = plan.leave_now.status;
+  const label = STATUS_LABEL[status];
+  if (!label) return null;
 
   return (
-    <div
-      style={{
-        position: "sticky",
-        top: 0,
-        zIndex: 500,
-        background: style.bg,
-        color: style.fg,
-        padding: "10px 16px",
-        fontWeight: 700,
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
-      <span>{style.label(plan)}</span>
-      <span style={{ fontWeight: 400, fontSize: 13 }}>
-        → {plan.recommended.full_name ?? plan.recommended.name}
-        {plan.leave_now.is_filling_fast && " · filling up fast"}
+    <div className={`leave-banner leave-banner-${status}`} role="status">
+      <span className="leave-banner-headline">
+        <span className="leave-banner-dot" aria-hidden="true" />
+        {label(plan)}
+      </span>
+      <span className="leave-banner-detail">
+        Head for {plan.recommended.full_name ?? plan.recommended.name}
+        {plan.leave_now.is_filling_fast && " — filling up fast"}
       </span>
     </div>
   );
